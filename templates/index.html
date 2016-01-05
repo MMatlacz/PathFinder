@@ -1,12 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ data }}</title>
-    <link rel="stylesheet" type="text/css" href='./static/index.css'>
-
+    {% block head %}
+        <meta charset="UTF-8">
+        <title>{% block title %}{{ data }}{% endblock %}</title>
+        {% block styles %}
+            <link rel="stylesheet" type="text/css" href='/static/index.css'>
+        {% endblock %}
+    {% endblock %}
 </head>
 <body>
-    {{ data }}
+{% block content %}
+    <div class="city"> Start : {{ start }} </div>
+    <div class="city"> End: {{ end }}</div>
+    <b>Path:</b>
+    <ul>
+        {% for p in path %}
+            <li>{{ p }}
+        {% endfor %}
+    </ul>
+    Distance: {{ distance }}
+{% endblock %}
 </body>
 </html>

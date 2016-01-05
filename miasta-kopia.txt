@@ -1,16 +1,26 @@
-Warszawa 303 Poznań
-Warszawa 192 Białystok
-Warszawa 101 Radom
-Warszawa 275 Kraków
-Warszawa 223 Częstochowa
-Poznań 465.78 Białystok
-Białystok 257.58 Radom
-Białystok 443.65 Kraków
-Kraków 111.25 Częstochowa
-Warszawa 415.6 Gdańsk
-Słupsk 124.3 Gdańsk
-Słupsk 702.4 Kraków
-Wrocław 269.7 Kraków
-Wrocław 217.6 Łódź
-Wrocław 346 Warszawa
-Łódź 130.9 Warszawa
+Szczecin;257.4;Bydgoszcz
+Bydgoszcz;142.3;Poznań
+Poznań;173.3;Wrocław
+Poznań;217.9;Łódź
+Wrocław;223.5;Łódź
+Wrocław;194.6;Katowice
+Katowice;78.85;Kraków
+Kraków;115.7;Kielce
+Kraków;167.6;Rzeszów
+Rzeszów;162.1;Lublin
+Kraków;109.3;Zakopane
+Warszawa;169.3;Lublin
+Warszawa;179.4;Kielce
+Warszawa;129.6;Łódź
+Warszawa;197.3;Białystok
+Białystok;225.3;Olsztyn
+Olsztyn;162;Gdańsk
+Gdańsk;36;Gdynia
+Gdańsk;167;Bydgoszcz
+Gdynia;108.7;Słupsk
+Słupsk;67.17;Koszalin
+Koszalin;41.53;Kołobrzeg
+Kołobrzeg;135.4;Szczecin
+Szczecin;46.94;Stargard Szczeciński
+Stargard Szczeciński;170;Piła
+Piła;89.06;Bydgoszcz
