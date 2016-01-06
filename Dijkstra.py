@@ -3,23 +3,17 @@ import json
 from collections import defaultdict
 
 import falcon
-
 from Statics import getTemplate
 from db_handler import get_all
 
 template = getTemplate('index.html')
 
+
 class Dijkstra(object):
     def __init__(self):
         pass
 
-
     def on_get(self, req, resp, start, finish):
-
-        def prepare_string(string):
-            new_string = string.decode('utf-8').lower()
-            new_string = new_string[0].upper() + new_string[1:]
-            return new_string.encode('utf-8')
 
         start = prepare_string(start)
         finish = prepare_string(finish)
@@ -37,15 +31,14 @@ class Dijkstra(object):
         path = []
         for p in path1:
             path.append(p.decode('utf-8'))
-        response = {'start': start, 'finish': finish, 'distance': visited[finish], 'path': path1}
+        response = {'start': start, 'finish': finish, 'distance': round(visited[finish], 2), 'path': path1}
         resp.body = json.dumps(response)
-        #resp.body = template.render(start=start.decode('utf-8'), finish = finish.decode('utf-8'), distance = visited[finish], path = path)
-        #resp.content_type = 'text/html'
+        # resp.body = template.render(start=start.decode('utf-8'), finish = finish.decode('utf-8'), distance = visited[finish], path = path)
+        # resp.content_type = 'text/html'
         resp.status = falcon.HTTP_200
 
 
 class Graph:
-
     def __init__(self):
         self.nodes = set()
         self.edges = defaultdict(list)
@@ -57,7 +50,7 @@ class Graph:
     def add_edge(self, from_node, to_node, distance):
         if to_node not in self.edges[from_node]:
             self.edges[from_node].append(to_node)
-        if from_node not in  self.edges[to_node]:
+        if from_node not in self.edges[to_node]:
             self.edges[to_node].append(from_node)
         self.distances[(from_node, to_node)] = distance
 
@@ -105,7 +98,6 @@ def read_file(filename):
 
 
 def create_graph(node_file):
-
     graph = Graph()
     '''
     for line in node_file:
@@ -116,7 +108,7 @@ def create_graph(node_file):
     pprint(graph.nodes)
     pprint(graph.edges)
     '''
-    #new version with db
+    # new version with db
     for line in get_all():
         start = line['start']
         finish = line['finish']
@@ -126,3 +118,21 @@ def create_graph(node_file):
         graph.add_edge(start, finish, distance=distance)
         graph.add_edge(finish, start, distance=distance)
     return graph
+
+
+def prepare_string(string):
+    """
+
+    :rtype: str
+    """
+    string = string.split(' ')
+    new_string = ''
+    for elem in string:
+        new_elem = elem.decode('utf-8').lower()
+        new_elem = new_elem[0].upper() + new_elem[1:]
+        new_string += new_elem + ' '
+
+    new_string = new_string.strip()
+    print(new_string)
+    return new_string.encode('utf-8')
+
