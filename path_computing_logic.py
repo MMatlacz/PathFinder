@@ -3,22 +3,43 @@ import json
 from collections import defaultdict
 
 import falcon
+
 from Statics import getTemplate
-from db_handler import get_all
+from db_handler import get_all, get_from_db, connect_db, delete_from_db, insert, update
 
 template = getTemplate('index.html')
 
 
-class Dijkstra(object):
+class Path:
     def __init__(self):
-        pass
+        self.msg = 'modification successful'
+
+    def on_post(self, req, resp, start, finish, distance):
+        if not get_from_db(start, finish).fetchall():
+            with connect_db() as db:
+                query = insert(start, finish, distance)
+                db.cursor().execute(query)
+                db.commit()
+
+    def on_delete(self, req, resp, start, finish):
+        delete_from_db(start, finish)
+        delete_from_db(finish, start)
+        resp.body = json.dumps(self.msg)
+        resp.status = falcon.HTTP_200
+
+    def on_put(self, req, resp, start, destination, distance):
+        with connect_db() as db:
+            query = update(start, destination, distance)
+            db.cursor().execute(query)
+            db.commit()
+        resp.body = json.dumps(self.msg)
+        resp.status = falcon.HTTP_200
 
     def on_get(self, req, resp, start, finish):
 
         start = prepare_string(start)
         finish = prepare_string(finish)
-        f = read_file('miasta-kopia.txt')
-        graph = create_graph(f)
+        graph = create_graph(get_all())
         visited, path = dijsktra(graph=graph, initial=start)
         city = path[finish]
         path1 = []
@@ -33,8 +54,6 @@ class Dijkstra(object):
             path.append(p.decode('utf-8'))
         response = {'start': start, 'finish': finish, 'distance': round(visited[finish], 2), 'path': path1}
         resp.body = json.dumps(response)
-        # resp.body = template.render(start=start.decode('utf-8'), finish = finish.decode('utf-8'), distance = visited[finish], path = path)
-        # resp.content_type = 'text/html'
         resp.status = falcon.HTTP_200
 
 
@@ -85,30 +104,9 @@ def dijsktra(graph, initial):
     return visited, path
 
 
-def read_file(filename):
-    content = []
-
-    with open(filename) as f:
-        lines = f.readlines()
-        f.close()
-    for line in lines:
-        path = line.split(";")
-        content.append(path)
-    return content
-
-
 def create_graph(node_file):
     graph = Graph()
-    '''
-    for line in node_file:
-        graph.add_node(line[0].strip())
-        graph.add_node(line[2].strip())
-        graph.add_edge(line[0].strip(), line[2].strip(), float(line[1]))
-        graph.add_edge(line[2].strip(), line[0].strip(), float(line[1]))
-    pprint(graph.nodes)
-    pprint(graph.edges)
-    '''
-    # new version with db
+
     for line in get_all():
         start = line['start']
         finish = line['finish']
@@ -133,6 +131,4 @@ def prepare_string(string):
         new_string += new_elem + ' '
 
     new_string = new_string.strip()
-    print(new_string)
     return new_string.encode('utf-8')
-

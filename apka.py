@@ -3,18 +3,15 @@ from wsgiref import simple_server
 
 import falcon
 
-import Dijkstra
 import db_handler
-import webpage
+import path_computing_logic
 from Statics import StaticsLoader
 
 app_url = '/matlaczm/MapaApi'
 app = application = falcon.API()
 
-app.add_route('/', webpage.Main())
-app.add_route('/map/{start}/{finish}', Dijkstra.Dijkstra())
-app.add_route('/modify/{start}/{finish}', db_handler.Modify())
-app.add_route('/modify/{start}/{finish}/{distance}', db_handler.Modify())
+app.add_route('/path/{start}/{finish}', path_computing_logic.Path())
+app.add_route('/path/{start}/{finish}/{distance}', path_computing_logic.Path())
 app.add_route('/static/{name}', StaticsLoader())
 app.add_route('/cities', db_handler.Search())
 
