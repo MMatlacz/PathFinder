@@ -64,13 +64,12 @@ def delete_from_db(start, finish):
 
 # get all connections between cities as list
 def get_all():
-    cities_raw = []
     with connect_db() as db:
         query = "SELECT start, finish, distance FROM connections"
         cities_raw = db.cursor().execute(query)
     cities = []
     for city in cities_raw.fetchall():
-        start, finish, distance = city
-        cities.append({'start': start.strip().encode('utf-8'), 'finish': finish.strip().encode('utf-8'),
+        start, destination, distance = city
+        cities.append({'start': start.strip().encode('utf-8'), 'finish': destination.strip().encode('utf-8'),
                        'distance': float(distance)})
     return cities

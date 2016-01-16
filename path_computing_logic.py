@@ -4,15 +4,33 @@ from collections import defaultdict
 
 import falcon
 
-from Statics import getTemplate
 from db_handler import get_all, get_from_db, connect_db, delete_from_db, insert, update
-
-template = getTemplate('index.html')
 
 
 class Path:
     def __init__(self):
         self.msg = 'modification successful'
+
+    def on_get(self, req, resp, start, finish):
+
+        start = prepare_string(start)
+        finish = prepare_string(finish)
+        graph = create_graph()
+        visited, paths = dijkstra(graph=graph, initial=start)
+        print(paths)
+        city = paths[finish]
+        path = [city]
+        while city != str(start):
+            city = paths[city]
+            path.append(city)
+        path.reverse()
+        path.append(finish)
+        path_formatted = []
+        for p in path:
+            path_formatted.append(p.decode('utf-8'))
+        response = {'start': start, 'finish': finish, 'distance': round(visited[finish], 2), 'path': path_formatted}
+        resp.body = json.dumps(response)
+        resp.status = falcon.HTTP_200
 
     def on_post(self, req, resp, start, finish, distance):
         if not get_from_db(start, finish).fetchall():
@@ -20,6 +38,8 @@ class Path:
                 query = insert(start, finish, distance)
                 db.cursor().execute(query)
                 db.commit()
+        resp.body = json.dumps(self.msg)
+        resp.status = falcon.HTTP_200
 
     def on_delete(self, req, resp, start, finish):
         delete_from_db(start, finish)
@@ -33,27 +53,6 @@ class Path:
             db.cursor().execute(query)
             db.commit()
         resp.body = json.dumps(self.msg)
-        resp.status = falcon.HTTP_200
-
-    def on_get(self, req, resp, start, finish):
-
-        start = prepare_string(start)
-        finish = prepare_string(finish)
-        graph = create_graph(get_all())
-        visited, path = dijsktra(graph=graph, initial=start)
-        city = path[finish]
-        path1 = []
-        path1.append(city)
-        while city != str(start):
-            city = path[city]
-            path1.append(city)
-        path1.reverse()
-        path1.append(finish)
-        path = []
-        for p in path1:
-            path.append(p.decode('utf-8'))
-        response = {'start': start, 'finish': finish, 'distance': round(visited[finish], 2), 'path': path1}
-        resp.body = json.dumps(response)
         resp.status = falcon.HTTP_200
 
 
@@ -74,7 +73,7 @@ class Graph:
         self.distances[(from_node, to_node)] = distance
 
 
-def dijsktra(graph, initial):
+def dijkstra(graph, initial):
     visited = {initial: 0}
     path = {}
 
@@ -104,7 +103,11 @@ def dijsktra(graph, initial):
     return visited, path
 
 
-def create_graph(node_file):
+def create_graph():
+    """
+
+    :rtype: Graph
+    """
     graph = Graph()
 
     for line in get_all():
@@ -121,6 +124,7 @@ def create_graph(node_file):
 def prepare_string(string):
     """
 
+    :param string:
     :rtype: str
     """
     string = string.split(' ')

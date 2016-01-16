@@ -1,6 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/Marcin/PycharmProjects/FalconTutorial/dijkstr.py", line 110, in <module>
-    compute_paths(nodes.get(start))
-  File "/Users/Marcin/PycharmProjects/FalconTutorial/dijkstr.py", line 86, in compute_paths
-    node_queue.pop(v)
-AttributeError: Node instance has no attribute '__trunc__'
