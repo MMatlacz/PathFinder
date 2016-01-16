@@ -6,7 +6,8 @@ import falcon
 import db_handler
 import path_computing_logic
 
-app_url = '/matlaczm/apka'
+#app_url needs to be changed if using uwsgi
+app_url = ''
 app = application = falcon.API()
 
 app.add_route(app_url + '/path/{start}/{finish}', path_computing_logic.Path())

@@ -24,7 +24,7 @@ Written in Python with Falcon Library
 
 >get path from Warszawa to Kraków
 
->http get localhost:5000/matlaczm/apka/path/Warszawa/Kraków
+>http get localhost:5000/path/Warszawa/Kraków
 
 >response will be:
 
