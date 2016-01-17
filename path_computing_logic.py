@@ -47,9 +47,9 @@ class Path:
         resp.body = json.dumps(self.msg)
         resp.status = falcon.HTTP_200
 
-    def on_put(self, req, resp, start, destination, distance):
+    def on_put(self, req, resp, start, finish, distance):
         with connect_db() as db:
-            query = update(start, destination, distance)
+            query = update(start, finish, distance)
             db.cursor().execute(query)
             db.commit()
         resp.body = json.dumps(self.msg)
