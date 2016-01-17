@@ -24,12 +24,15 @@ def update(start, finish, distance):
 class Search:
     def on_get(self, req, resp):
         with connect_db() as db:
-            query = "SELECT start FROM {}".format(TABLE)
+            query = "SELECT start, finish FROM {}".format(TABLE)
             cities = db.cursor().execute(query).fetchall()
         data = []
         for city in cities:
             if city[0].encode('utf-8') not in data:
                 data.append(city[0].encode('utf-8'))
+            if city[1].encode('utf-8') not in data:
+                data.append(city[1].encode('utf-8'))
+            data.sort()
         resp.body = json.dumps(data, encoding='utf-8')
         resp.status = falcon.HTTP_200
 
